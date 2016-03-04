@@ -1,0 +1,5 @@
+*.ibc
+*~
+*.o
+*.out
+http_doc/

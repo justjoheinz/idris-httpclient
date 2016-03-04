@@ -1,0 +1,15 @@
+package httpclient
+
+sourcedir = src
+
+modules = HttpClient,
+          HttpClient.Base,
+          HttpClient.Methods,
+          HttpClient.Requests
+
+opts = "-p effects"
+
+makefile = Makefile
+
+objs = http.o, http.h, memstream.o, memstream.h
+libs = curl
