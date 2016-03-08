@@ -60,6 +60,19 @@ int http_easy_setopt_method(void *curl, int method) {
       #endif
       return curl_easy_setopt(curl, CURLOPT_POST, 1L);
       break;
+    case 2: // PUT ;
+      #ifdef _HTTPCLIENT_DEBUG
+      fprintf(stderr, "setup put request");
+      #endif
+      return curl_easy_setopt(curl, CURLOPT_PUT, 1L);
+      break;
+    case 3: // DELETE ;
+      #ifdef _HTTPCLIENT_DEBUG
+      fprintf(stderr, "setup delete request");
+      #endif
+      // TODO return curl_easy_setopt(curl, CURLOPT_HTTPDELETE, 1L);
+      return 0;
+      break;
     default: //GET ;
       #ifdef _HTTPCLIENT_DEBUG
       fprintf(stderr, "setup get request");
