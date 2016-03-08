@@ -11,19 +11,25 @@ module Main
 import HttpClient
 
 Show Reply where
-  show (MkReply statusCode header body) = "\nstatusCode: " ++ show statusCode ++ "\nheader:\n" ++ header ++"\nbody:\n" ++ body
-
+  show (MkReply statusCode header body) = "\nstatusCode: " ++
+                                          show statusCode ++
+                                          "\nheader:\n" ++
+                                          show header ++
+                                          "\nbody:\n" ++
+                                          body
 
 main: IO ()
 main = do
     putStrLn "GET request"
-    getResp <- httpClient $ MkRequest (GET) ("http://httpbin.org/get")
+    getResp <- httpClient $ mkReq ("http://httpbin.org/get")
     putStrLn $ show getResp
     putStrLn "\n\n\n"
     putStrLn "POST request"
-    postResp <- httpClient $ MkRequest (POST "language=idris&http=libcurl") ("http://httpbin.org/post")
+    postResp <- httpClient $ post "language=idris&http=libcurl" .
+                             withHeader ("Content-Type", "foo") .
+                             withHeader ("Link", "bar")
+                           $ mkReq("http://httpbin.org/post")
     putStrLn $ show postResp
-
 ```
 
 Compile this with
