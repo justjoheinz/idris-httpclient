@@ -5,7 +5,9 @@ sourcedir = src
 modules = HttpClient,
           HttpClient.Base,
           HttpClient.Methods,
-          HttpClient.Requests
+          HttpClient.Requests,
+          HttpClient.Foreign,
+          HttpClient.ForeignTypes
 
 opts = "-p effects"
 
