@@ -24,7 +24,9 @@ char *response_body(struct Response *r) {
 }
 
 char *response_header(struct Response *r) {
+  #ifdef _HTTPCLIENT_DEBUG
   fprintf(stderr, "header in response_header: %s\n", ((struct Response *)r)->header);
+  #endif
   return ((struct Response *) r)->header;
 }
 
@@ -53,11 +55,15 @@ int http_easy_setopt_method(void *curl, int method) {
   CURL *c = (CURL *) curl;
   switch (method) {
     case 1: // POST ;
+      #ifdef _HTTPCLIENT_DEBUG
       fprintf(stderr, "setup post request");
+      #endif
       return curl_easy_setopt(curl, CURLOPT_POST, 1L);
       break;
     default: //GET ;
+      #ifdef _HTTPCLIENT_DEBUG
       fprintf(stderr, "setup get request");
+      #endif
       return curl_easy_setopt(c, CURLOPT_HTTPGET,  1L);
       break;
   }
@@ -102,8 +108,10 @@ void *http_easy_perform(void *curl) {
     response.header = headerBuffer;
     response.body_size = bodySize;
     response.body = bodyBuffer;
+    #ifdef _HTTPCLIENT_DEBUG
     fprintf(stderr, "header in http_easy_perform: %s\n", headerBuffer);
     fprintf(stderr, "body in http_easy_perform: %s\n", bodyBuffer);
+    #endif
 
     return &response;
   }
