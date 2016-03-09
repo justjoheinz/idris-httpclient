@@ -70,8 +70,7 @@ int http_easy_setopt_method(void *curl, int method) {
       #ifdef _HTTPCLIENT_DEBUG
       fprintf(stderr, "setup delete request");
       #endif
-      // TODO return curl_easy_setopt(curl, CURLOPT_HTTPDELETE, 1L);
-      return 0;
+      return curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE"); 
       break;
     default: //GET ;
       #ifdef _HTTPCLIENT_DEBUG
