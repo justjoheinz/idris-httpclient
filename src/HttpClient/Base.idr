@@ -5,12 +5,6 @@ import HttpClient.Methods
 import HttpClient.Foreign
 import Data.Fin
 
-%include C "http.h"
-%include C "curl/curl.h"
-%link C "http.o"
-%link C "memstream.o"
-%lib C "curl"
-
 %access export
 %default total
 
