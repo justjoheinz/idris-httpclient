@@ -6,6 +6,7 @@ modules = HttpClient,
           HttpClient.Base,
           HttpClient.Methods,
           HttpClient.Requests,
+          HttpClient.Headers,
           HttpClient.Foreign,
           HttpClient.ForeignTypes
 

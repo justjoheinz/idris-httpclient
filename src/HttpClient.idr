@@ -4,6 +4,7 @@ import HttpClient.Base
 import HttpClient.ForeignTypes
 import public HttpClient.Methods
 import public HttpClient.Requests
+import public HttpClient.Headers
 
 %access export
 %default total
