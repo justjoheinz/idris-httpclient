@@ -2,4 +2,4 @@
 *~
 *.o
 *.out
-http_doc/
+httpclient_doc/
