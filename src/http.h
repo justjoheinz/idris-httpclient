@@ -15,14 +15,16 @@ char *response_header(void *r);
 size_t response_body_size(void *r);
 size_t response_header_size(void *r);
 
-void* http_easy_init(void);
 
 int http_easy_setopt_url(void *curl, char *url);
 int http_easy_setopt_method(void *curl, int method);
 int http_easy_setopt_postfields(void *curl, char* data);
 
-void *http_easy_perform(void *curl);
+void *http_header_append(void *curl, char *header );
 
+void *http_easy_init(void);
+void *http_easy_perform(void *curl);
 void http_easy_cleanup(void *curl);
+
 
 #endif

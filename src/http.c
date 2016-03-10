@@ -14,6 +14,7 @@ struct Response {
 };
 
 static struct Response response;
+static struct curl_slist *headerList=NULL;
 
 long response_code(struct Response *r) {
   return ((struct Response *) r)->response_code;
@@ -38,12 +39,24 @@ size_t response_header_size(struct Response *r) {
   return ((struct Response *) r)->header_size;
 }
 
+void *http_header_append(void *curl, char *header ) {
+  #ifdef _HTTPCLIENT_DEBUG
+  fprintf(stderr, "adding header: %s\n", header);
+  #endif
+  headerList = curl_slist_append(headerList,  header );
+  return (void *) curl;
+}
+
 void* http_easy_init(void) {
   CURL *curl = curl_easy_init();
   return (void *) curl;
 }
 
 void http_easy_cleanup(void *curl) {
+  if (headerList != NULL) {
+    curl_slist_free_all(headerList);
+    headerList = NULL;
+  }
   return curl_easy_cleanup((CURL *) curl);
 }
 
@@ -70,7 +83,7 @@ int http_easy_setopt_method(void *curl, int method) {
       #ifdef _HTTPCLIENT_DEBUG
       fprintf(stderr, "setup delete request");
       #endif
-      return curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE"); 
+      return curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
       break;
     default: //GET ;
       #ifdef _HTTPCLIENT_DEBUG
@@ -87,6 +100,7 @@ int http_easy_setopt_postfields(void *curl, char* data) {
 }
 
 void *http_easy_perform(void *curl) {
+  CURL *curlHandle = (CURL *) curl;
   long response_code;
   CURLcode res;
   char *bodyBuffer;
@@ -99,10 +113,14 @@ void *http_easy_perform(void *curl) {
   bodyFile = open_memstream (&bodyBuffer, &bodySize);
   headerFile = open_memstream (&headerBuffer, &headerSize);
 
-  curl_easy_setopt((CURL *) curl, CURLOPT_WRITEDATA, (void *)bodyFile);
-  curl_easy_setopt((CURL *) curl, CURLOPT_HEADERDATA, (void *)headerFile);
+  curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, (void *)bodyFile);
+  curl_easy_setopt(curlHandle, CURLOPT_HEADERDATA, (void *)headerFile);
 
-  res = curl_easy_perform((CURL *) curl);
+  if (headerList != NULL) {
+    curl_easy_setopt(curlHandle, CURLOPT_HTTPHEADER, headerList);
+  }
+
+  res = curl_easy_perform(curlHandle);
   fclose(bodyFile);
   fclose(headerFile);
 

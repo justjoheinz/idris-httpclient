@@ -2,7 +2,7 @@
 CC = gcc
 
 # debug flags
-DEBUG = -D_HTTPCLIENT_DEBUG=0
+#DEBUG = -D_HTTPCLIENT_DEBUG=1
 
 # compiler flags:
 CFLAGS  = -Wall -I/usr/local/opt/curl/include $(DEBUG)

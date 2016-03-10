@@ -1,5 +1,5 @@
 
-### idris http client
+## idris http client
 
 This is a very limited httpclient implementation based on libcurl for idris.
 It is still littered with debug output and currently just supports a minimal subset
@@ -11,25 +11,37 @@ module Main
 import HttpClient
 
 Show Reply where
-  show (MkReply statusCode header body) = "\nstatusCode: " ++
-                                          show statusCode ++
-                                          "\nheader:\n" ++
-                                          show header ++
-                                          "\nbody:\n" ++
-                                          body
+  show (MkReply statusCode header body) = concat $ intersperse "\n"
+                                          ["\nstatusCode: " ,
+                                            show statusCode ,
+                                          "header:" ,
+                                            show header,
+                                          "body:",
+                                            body]
 
 main: IO ()
 main = do
     putStrLn "GET request"
-    getResp <- httpClient $ mkReq ("http://httpbin.org/get")
+    getResp <- httpClient $ get
+                          $ url "http://httpbin.org/get"
     putStrLn $ show getResp
     putStrLn "\n\n\n"
     putStrLn "POST request"
     postResp <- httpClient $ post "language=idris&http=libcurl" .
-                             withHeader ("Content-Type", "foo") .
-                             withHeader ("Link", "bar")
-                           $ mkReq("http://httpbin.org/post")
+                             withHeader (Link, "up") .
+                             withHeader (Accept, "*/*")
+                           $ url "http://httpbin.org/post"
     putStrLn $ show postResp
+    putStrLn "\n\n\n"
+    putStrLn "DELETE request"
+    delResp <- httpClient $ delete "" .
+                            withHeaders [
+                              (User_Agent, "idris-httpclient"),
+                              (X_ "Some-Header", "my-data")            
+                            ]
+                          $ url "http://httpbin.org/delete"
+    putStrLn $ show delResp
+
 ```
 
 Compile this with

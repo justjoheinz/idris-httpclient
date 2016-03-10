@@ -2,6 +2,7 @@ module HttpClient.Base
 
 import HttpClient.Requests
 import HttpClient.Methods
+import HttpClient.Headers
 import HttpClient.Foreign
 import Data.Fin
 
@@ -17,7 +18,7 @@ http_init = do_http_init >>= responsePtr
 ||| @ curlHandle the curlHandle
 http_setopt_url: (url: String) -> (curlHandle: CURLPTR) -> IO (Response Ok)
 http_setopt_url url (MkHttp ptr) =
-  responseTy <$> (do_http_setopt_url ptr url)
+  responseTy <$> (do_http_setopt_url url ptr)
 
 ||| set the request method
 ||| @ method the request method
@@ -30,6 +31,10 @@ http_setopt_method (POST d) (MkHttp ptr)  = do
                                               pure $  r2
 http_setopt_method (PUT d) (MkHttp ptr) = do_http_setopt_method 2 ptr
 http_setopt_method (DELETE d) (MkHttp ptr) = do_http_setopt_method 3 ptr
+
+http_header_append: (header: Header) -> (curlHandle: CURLPTR) -> IO (CURLPTR)
+http_header_append header (MkHttp ptr) =
+  MkHttp <$> (do_http_header_append (showHeader header) ptr)
 
 ||| higher level perform of the request, which
 ||| transforms the request into a reply

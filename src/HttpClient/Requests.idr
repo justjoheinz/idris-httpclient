@@ -1,32 +1,10 @@
 module HttpClient.Requests
 
 import HttpClient.Methods
+import HttpClient.Headers
 
 %access export
 %default total
-
-public export
-Header: Type
-Header = (String, String)
-
-%name Header header
-
-public export
-Headers: Type
-Headers = List Header
-
-%name Headers headers
-
-private
-parseHeader: String -> Header
-parseHeader h = let keyValue = break (\c => c == ':') h
-                    key = trim $ fst keyValue
-                    valueColon = snd keyValue
-                    value = trim $ substr 1 (length valueColon) valueColon
-                in (key, value)
-
-parseHeaders: String -> List Header
-parseHeaders h = parseHeader <$> lines h
 
 public export
 record Request where
@@ -64,8 +42,8 @@ Response x = Either NotOk x
 
 -- Request Builder
 
-mkReq: (url: String) -> Request
-mkReq url = MkRequest GET url []
+url: (url: String) -> Request
+url url = MkRequest GET url []
 
 withHeader: Header -> Request -> Request
 withHeader header request = record { headers = header :: (headers request)} request
@@ -76,8 +54,17 @@ withHeaders hs request =   record { headers = hs ++ (headers request)} request
 withMethod: Method -> Request -> Request
 withMethod method request = record { method = method } request
 
+get: Request -> Request
+get request = withMethod (GET) request
+
 post: String -> Request -> Request
-post d request = withMethod (POST d) request
+post body request = withMethod (POST body) request
+
+put: String -> Request -> Request
+put body request = withMethod (PUT body) request
+
+delete: String -> Request -> Request
+delete body request = withMethod (DELETE body) request
 
 -- Instances
 

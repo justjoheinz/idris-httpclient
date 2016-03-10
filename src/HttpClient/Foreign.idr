@@ -33,45 +33,54 @@ responsePtr ptr = if !(Strings.nullPtr ptr)
 ||| projection for the C Response struct
 response_body: RESPONSEPTR -> IO String
 response_body (MkResponse ptr) =
-  (foreign FFI_C "response_body" (Ptr -> IO String)) ptr
+  foreign FFI_C "response_body" (Ptr -> IO String) ptr
 
 ||| projection for the C Response struct
 response_header: RESPONSEPTR -> IO String
 response_header (MkResponse ptr) =
-  (foreign FFI_C "response_header" (Ptr -> IO String)) ptr
+  foreign FFI_C "response_header" (Ptr -> IO String) ptr
 
 ||| projection for the C Response struct
 response_code: RESPONSEPTR -> IO Int
 response_code (MkResponse ptr) =
-  (foreign FFI_C "response_code" (Ptr -> IO Int)) ptr
+  foreign FFI_C "response_code" (Ptr -> IO Int) ptr
 
 -- PRIMITIVE IO OPERATIONS
 
+-- Setter
+
+||| set the method for the request
+do_http_setopt_method: Int -> Ptr -> IO (Response Ok)
+do_http_setopt_method m ptr =
+responseTy <$> foreign FFI_C "http_easy_setopt_method" (Ptr -> Int -> IO Int) ptr m
+
+||| set POST data
+do_http_setopt_postfields: String -> Ptr -> IO (Response Ok)
+do_http_setopt_postfields d ptr =
+responseTy <$> foreign FFI_C "http_easy_setopt_postfields" (Ptr -> String -> IO Int) ptr d
+
 ||| set the url for the request
 ||| * url the url
-do_http_setopt_url: Ptr -> (url: String) -> IO (Int)
-do_http_setopt_url ptr url =
-  (foreign FFI_C "http_easy_setopt_url" (Ptr -> String -> (IO Int)) ptr url)
+do_http_setopt_url: (url: String) -> Ptr -> IO (Int)
+do_http_setopt_url url ptr =
+  foreign FFI_C "http_easy_setopt_url" (Ptr -> String -> IO Int) ptr url
+
+do_http_header_append: (header: String) -> Ptr -> IO Ptr
+do_http_header_append header ptr =
+  foreign FFI_C "http_header_append" (Ptr -> String -> IO Ptr) ptr  header
+
+-- Lifecycle
 
 ||| initialze the curl subsystem
 do_http_init: IO (Ptr)
 do_http_init =
   foreign FFI_C "http_easy_init" (IO Ptr)
 
-||| set the method for the request
-do_http_setopt_method: Int -> Ptr -> IO (Response Ok)
-do_http_setopt_method m ptr =
-  responseTy <$> (foreign FFI_C "http_easy_setopt_method" (Ptr -> Int -> (IO Int)) ptr m)
-
-||| set POST data
-do_http_setopt_postfields: String -> Ptr -> IO (Response Ok)
-do_http_setopt_postfields d ptr =
-  responseTy <$> (foreign FFI_C "http_easy_setopt_postfields" (Ptr -> String -> (IO Int)) ptr d)
 
 ||| low level perform of the request
 http_perform: CURLPTR -> IO (RESPONSEPTR)
 http_perform (MkHttp ptr) =
-  MkResponse <$> (foreign FFI_C "http_easy_perform" (Ptr -> IO Ptr) ptr)
+  MkResponse <$> foreign FFI_C "http_easy_perform" (Ptr -> IO Ptr) ptr
 
 ||| cleanup the curl subsystem
 http_cleanup: CURLPTR -> IO ()
