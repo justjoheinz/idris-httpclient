@@ -52,16 +52,16 @@ response_code (MkResponse ptr) =
 ||| set the method for the request
 do_http_setopt_method: Int -> Ptr -> IO (Response Ok)
 do_http_setopt_method m ptr =
-responseTy <$> foreign FFI_C "http_easy_setopt_method" (Ptr -> Int -> IO Int) ptr m
+  responseTy <$> foreign FFI_C "http_easy_setopt_method" (Ptr -> Int -> IO Int) ptr m
 
 ||| set POST data
 do_http_setopt_postfields: String -> Ptr -> IO (Response Ok)
 do_http_setopt_postfields d ptr =
-responseTy <$> foreign FFI_C "http_easy_setopt_postfields" (Ptr -> String -> IO Int) ptr d
+  responseTy <$> foreign FFI_C "http_easy_setopt_postfields" (Ptr -> String -> IO Int) ptr d
 
 ||| set the url for the request
 ||| * url the url
-do_http_setopt_url: (url: String) -> Ptr -> IO (Int)
+do_http_setopt_url: (url: String) -> Ptr -> IO Int
 do_http_setopt_url url ptr =
   foreign FFI_C "http_easy_setopt_url" (Ptr -> String -> IO Int) ptr url
 
@@ -69,9 +69,9 @@ do_http_header_append: (header: String) -> Ptr -> IO Ptr
 do_http_header_append header ptr =
   foreign FFI_C "http_header_append" (Ptr -> String -> IO Ptr) ptr header
 
-do_http_setopt_follow: Ptr -> IO Ptr
+do_http_setopt_follow: Ptr -> IO (Response Ok)
 do_http_setopt_follow ptr =
-  foreign FFI_C "http_easy_setopt_follow" (Ptr -> IO Ptr) ptr
+  responseTy <$> foreign FFI_C "http_easy_setopt_follow" (Ptr -> IO Int) ptr
 
 -- Lifecycle
 
@@ -82,11 +82,11 @@ do_http_init =
 
 
 ||| low level perform of the request
-http_perform: CURLPTR -> IO (RESPONSEPTR)
-http_perform (MkHttp ptr) =
+do_http_perform: CURLPTR -> IO (RESPONSEPTR)
+do_http_perform (MkHttp ptr) =
   MkResponse <$> foreign FFI_C "http_easy_perform" (Ptr -> IO Ptr) ptr
 
 ||| cleanup the curl subsystem
-http_cleanup: CURLPTR -> IO ()
-http_cleanup (MkHttp ptr) =
+do_http_cleanup: CURLPTR -> IO ()
+do_http_cleanup (MkHttp ptr) =
   foreign FFI_C "http_easy_cleanup" (Ptr -> IO ()) ptr

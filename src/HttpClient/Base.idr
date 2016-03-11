@@ -36,8 +36,8 @@ http_header_append: (header: Header) -> (curlHandle: CURLPTR) -> IO (CURLPTR)
 http_header_append header (MkHttp ptr) =
   MkHttp <$> (do_http_header_append (showHeader header) ptr)
 
-http_setopt_option: Option -> (curlHandle: CURLPTR) -> IO (CURLPTR)
-http_setopt_option FOLLOW (MkHttp ptr) = MkHttp <$> (do_http_setopt_follow ptr)
+http_setopt_option: Option -> (curlHandle: CURLPTR) -> IO (Response Ok)
+http_setopt_option FOLLOW (MkHttp ptr) = do_http_setopt_follow ptr
 
 
 ||| higher level perform of the request, which
@@ -45,7 +45,7 @@ http_setopt_option FOLLOW (MkHttp ptr) = MkHttp <$> (do_http_setopt_follow ptr)
 ||| @ curlHandle the curlHandle
 http_perform_high: (curlHandle: CURLPTR) -> IO (Response Reply)
 http_perform_high curlPtr = do
-    responsePtr <- http_perform curlPtr
+    responsePtr <- do_http_perform curlPtr
     if !(nullPtr $ getResponsePtr responsePtr)
       then pure $ Left $ MkError ("Error in curl subsystem")
       else
@@ -53,4 +53,5 @@ http_perform_high curlPtr = do
         body <- response_body responsePtr
         header <- parseHeaders <$> response_header responsePtr
         statusCode <- response_code responsePtr
+        do_http_cleanup curlPtr
         pure $ Right $ MkReply statusCode header body
