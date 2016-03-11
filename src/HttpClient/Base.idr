@@ -36,6 +36,10 @@ http_header_append: (header: Header) -> (curlHandle: CURLPTR) -> IO (CURLPTR)
 http_header_append header (MkHttp ptr) =
   MkHttp <$> (do_http_header_append (showHeader header) ptr)
 
+http_setopt_option: Option -> (curlHandle: CURLPTR) -> IO (CURLPTR)
+http_setopt_option FOLLOW (MkHttp ptr) = MkHttp <$> (do_http_setopt_follow ptr)
+
+
 ||| higher level perform of the request, which
 ||| transforms the request into a reply
 ||| @ curlHandle the curlHandle

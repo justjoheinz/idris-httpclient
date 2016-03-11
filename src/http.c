@@ -64,6 +64,10 @@ int http_easy_setopt_url(void *curl, char *url) {
   return (int) curl_easy_setopt((CURL *) curl, CURLOPT_URL, url);
 }
 
+int http_easy_setopt_follow(void *curl) {
+  return (int) curl_easy_setopt((CURL *) curl, CURLOPT_FOLLOWLOCATION, 1L);
+}
+
 int http_easy_setopt_method(void *curl, int method) {
   CURL *c = (CURL *) curl;
   switch (method) {

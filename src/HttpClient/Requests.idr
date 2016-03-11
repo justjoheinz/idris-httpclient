@@ -7,11 +7,18 @@ import HttpClient.Headers
 %default total
 
 public export
+data Option =
+  FOLLOW
+
+%name Option option
+
+public export
 record Request where
   constructor MkRequest
   method: Method
   url: String
   headers: Headers
+  options: List Option
 
 %name Request request
 
@@ -43,16 +50,21 @@ Response x = Either NotOk x
 -- Request Builder
 
 url: (url: String) -> Request
-url url = MkRequest GET url []
+url url = MkRequest GET url [] []
 
 withHeader: Header -> Request -> Request
 withHeader header request = record { headers = header :: (headers request)} request
 
 withHeaders: Headers -> Request -> Request
-withHeaders hs request =   record { headers = hs ++ (headers request)} request
+withHeaders hs request = record { headers = hs ++ (headers request)} request
 
+private
 withMethod: Method -> Request -> Request
 withMethod method request = record { method = method } request
+
+private
+withOption: Option -> Request -> Request
+withOption option request = record { options = option :: (options request)} request
 
 get: Request -> Request
 get request = withMethod (GET) request
@@ -61,10 +73,13 @@ post: String -> Request -> Request
 post body request = withMethod (POST body) request
 
 put: String -> Request -> Request
-put body request = withMethod (PUT body) request
+put body  request= withMethod (PUT body) request
 
 delete: String -> Request -> Request
-delete body request = withMethod (DELETE body) request
+delete body = withMethod (DELETE body)
+
+follow: Request -> Request
+follow = withOption FOLLOW
 
 -- Instances
 

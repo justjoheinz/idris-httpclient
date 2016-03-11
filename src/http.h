@@ -19,6 +19,7 @@ size_t response_header_size(void *r);
 int http_easy_setopt_url(void *curl, char *url);
 int http_easy_setopt_method(void *curl, int method);
 int http_easy_setopt_postfields(void *curl, char* data);
+int http_easy_setopt_follow(void *curl);
 
 void *http_header_append(void *curl, char *header );
 

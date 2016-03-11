@@ -67,7 +67,11 @@ do_http_setopt_url url ptr =
 
 do_http_header_append: (header: String) -> Ptr -> IO Ptr
 do_http_header_append header ptr =
-  foreign FFI_C "http_header_append" (Ptr -> String -> IO Ptr) ptr  header
+  foreign FFI_C "http_header_append" (Ptr -> String -> IO Ptr) ptr header
+
+do_http_setopt_follow: Ptr -> IO Ptr
+do_http_setopt_follow ptr =
+  foreign FFI_C "http_easy_setopt_follow" (Ptr -> IO Ptr) ptr
 
 -- Lifecycle
 
