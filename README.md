@@ -5,6 +5,10 @@ This is a very limited httpclient implementation based on libcurl for idris.
 It is still littered with debug output and currently just supports a minimal subset
 of HTTP features. It is probably not threadsafe, is leaking memory, the API is far from stable and not documented etc.
 
+### Example
+
+Below are some examples of the usage for some request kinds:
+
 ```idris
 module Main
 
@@ -19,29 +23,34 @@ Show Reply where
                                           "body:",
                                             body]
 
+example: String -> IO (Response Reply) -> IO ()
+example intro resp= do
+  putStrLn intro
+  putStrLn $ show !resp
+  putStrLn "\n\n\n"
+
 main: IO ()
 main = do
-    putStrLn "GET request"
-    getResp <- httpClient $ get
+    example "GET request" $ httpClient
+                          $ get
                           $ url "http://httpbin.org/get"
-    putStrLn $ show getResp
-    putStrLn "\n\n\n"
-    putStrLn "POST request"
-    postResp <- httpClient $ post "language=idris&http=libcurl" .
+
+    example "POST request" $ httpClient
+                           $ post "language=idris&http=libcurl" .
                              withHeader (Link, "up") .
                              withHeader (Accept, "*/*")
                            $ url "http://httpbin.org/post"
-    putStrLn $ show postResp
-    putStrLn "\n\n\n"
-    putStrLn "DELETE request"
-    delResp <- httpClient $ delete "" .
-                            withHeaders [
-                              (User_Agent, "idris-httpclient"),
-                              (X_ "Some-Header", "my-data")            
-                            ]
-                          $ url "http://httpbin.org/delete"
-    putStrLn $ show delResp
 
+    example "DELETE request" $ httpClient $ delete "" .
+                              withHeaders [
+                                (User_Agent, "idris-httpclient"),
+                                (X_ "Some-Header", "my-data")
+                                ]
+                            $ url "http://httpbin.org/delete"
+
+    example "Follow request" $ httpClient $ get
+                             $ follow
+                             $ url "http://httpbin.org/redirect/1"
 ```
 
 Compile this with
