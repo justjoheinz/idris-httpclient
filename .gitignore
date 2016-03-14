@@ -3,3 +3,4 @@
 *.o
 *.out
 httpclient_doc/
+example/clientsample

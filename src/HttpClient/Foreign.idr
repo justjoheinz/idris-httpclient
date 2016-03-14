@@ -80,7 +80,6 @@ do_http_init: IO (Ptr)
 do_http_init =
   foreign FFI_C "http_easy_init" (IO Ptr)
 
-
 ||| low level perform of the request
 do_http_perform: CURLPTR -> IO (RESPONSEPTR)
 do_http_perform (MkHttp ptr) =

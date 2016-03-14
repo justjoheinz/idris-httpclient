@@ -25,11 +25,16 @@ http_setopt_url url (MkHttp ptr) =
 ||| @ curlHandle the curlHandle
 http_setopt_method: (method: Method) -> (curlHandle: CURLPTR) -> IO (Response Ok)
 http_setopt_method (GET) (MkHttp ptr)  = do_http_setopt_method 0 ptr
-http_setopt_method (POST d) (MkHttp ptr)  = do
-                                              r1 <- do_http_setopt_method 1 ptr
-                                              r2 <- do_http_setopt_postfields d ptr
-                                              pure $  r2
-http_setopt_method (PUT d) (MkHttp ptr) = do_http_setopt_method 2 ptr
+http_setopt_method (POST d) (MkHttp ptr)  =
+  do
+    r1 <- do_http_setopt_method 1 ptr
+    r2 <- do_http_setopt_postfields (bodyToString d) ptr
+    pure $  r2
+http_setopt_method (PUT d) (MkHttp ptr) =
+  do
+    do_http_setopt_method 2 ptr
+    r <- do_http_setopt_postfields (bodyToString d) ptr
+    pure $ r
 http_setopt_method (DELETE d) (MkHttp ptr) = do_http_setopt_method 3 ptr
 
 http_header_append: (header: Header) -> (curlHandle: CURLPTR) -> IO (CURLPTR)

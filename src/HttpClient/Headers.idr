@@ -61,6 +61,8 @@ data HeaderFields =
   Upgrade |
   Via |
   Warning |
+  ||| An arbitrary HTTP header in the form of
+  ||| "X-Foo"
   X_ String
 
 %name HeaderFields hf, hf1, hf2

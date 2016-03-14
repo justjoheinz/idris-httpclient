@@ -81,7 +81,7 @@ int http_easy_setopt_method(void *curl, int method) {
       #ifdef _HTTPCLIENT_DEBUG
       fprintf(stderr, "setup put request");
       #endif
-      return curl_easy_setopt(curl, CURLOPT_PUT, 1L);
+      return curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");
       break;
     case 3: // DELETE ;
       #ifdef _HTTPCLIENT_DEBUG

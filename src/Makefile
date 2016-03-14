@@ -16,7 +16,7 @@ LIBS = -lcurl
 SRCS = http.c memstream.c
 
 all: $(SRCS)
-	$(CC) $(CFLAGS) -c $(SRCS) $(LFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) -c $(SRCS) $(LFLAGS)
 
 clean:
 	$(RM) *.o *~  a.out
