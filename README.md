@@ -67,6 +67,9 @@ Installation is only tested on Mac OS X. You will need libcurl (and idris 0.10.2
 brew install curl
 ```
 
+You will also need the lightyear parser library available from
+[LightYear](https://github.com/ziman/lightyear). Follow the build instructions to put it into your Idris distribution.
+
 The Makefile in `/src` assumes a standard location. If that is not ok, adopt to your needs.
 If you have the prerequisites, just do:
 
