@@ -1,9 +1,10 @@
 module Main
 
 import HttpClient
+import HttpClient.Json
 
 Show Reply where
-  show (MkReply statusCode header body) = concat $ intersperse "\n"
+  show (MkReply statusCode header body) = concat $ Prelude.List.intersperse "\n"
                                           ["\nstatusCode: " ,
                                             show statusCode ,
                                           "header:" ,
@@ -28,6 +29,11 @@ main = do
                              withHeader (Link, "up") .
                              withHeader (Accept, "*/*")
                            $ url "http://httpbin.org/post"
+
+    example "POST json"   $ httpClient
+                          $ post (JsonObject ( (insert "foo" (JsonString "bar")) . (insert "bar" (JsonString "foo" ))) empty) .
+                             withHeader (Content_Type, "application/json")
+                          $ url "http://httpbin.org/post"
 
     example "PUT request" $ httpClient
                           $ put "language=idris&http=libcurl" .

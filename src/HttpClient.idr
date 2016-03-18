@@ -7,8 +7,11 @@ import public HttpClient.Methods
 import public HttpClient.Requests
 import public HttpClient.Headers
 
+import public Data.SortedMap
+
 %access export
 %default total
+
 
 ||| make a client request
 ||| @ request the request record

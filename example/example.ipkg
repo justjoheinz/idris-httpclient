@@ -1,0 +1,9 @@
+package clientsample
+
+pkgs = httpclient
+
+modules = ClientSample
+
+main = ClientSample
+
+executable = clientsample

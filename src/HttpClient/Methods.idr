@@ -1,15 +1,18 @@
 module HttpClient.Methods
 
 import Data.Fin
+import HttpClient.Json
 
 %access export
-%default total
+%default partial
 
+total
 Body: Type
 Body = String
 
+total
 bodyToString: Body -> String
-bodyToString b = (the String b)
+bodyToString b = b
 
 ||| Interface to transform arbitrary types
 ||| into a Body of a request
@@ -20,6 +23,10 @@ interface Writeable a where
 public export
 Writeable String where
   writeBody = id
+
+public export
+Writeable JsonValue where
+  writeBody jsValue = show jsValue
 
 ||| the Http Method
 public export

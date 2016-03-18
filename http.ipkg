@@ -8,9 +8,10 @@ modules = HttpClient,
           HttpClient.Requests,
           HttpClient.Headers,
           HttpClient.Foreign,
-          HttpClient.ForeignTypes
+          HttpClient.ForeignTypes,
+          HttpClient.Json
 
-opts = "-p effects"
+opts = "-p effects -p lightyear -p contrib"
 
 makefile = Makefile
 
